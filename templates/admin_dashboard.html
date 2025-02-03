@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Admin Dashboard</h1>
+    
+    <!-- Performance Section -->
+    <h2 class="mt-5">Performance Overview</h2>
+    <div class="row text-center">
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Total Users</h5>
+                    <p class="display-6">{{ total_users }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Tasks Created Today</h5>
+                    <p class="display-6">{{ tasks_today }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">New Users Today</h5>
+                    <p class="display-6">{{ new_users_today }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Search -->
+    <form action="{{ url_for('admin_dashboard') }}" method="GET" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Search users by username..." value="{{ request.args.get('search', '') }}">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+        </div>
+    </form>
+
+    <!-- User Management -->
+    <h2 class="mt-5">Manage Users</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>
+                        {% if user.is_admin %}
+                            Admin
+                        {% else %}
+                            User
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not user.is_admin %}
+                            <a href="{{ url_for('delete_user', user_id=user.id) }}" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash"></i> 
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+   
+
+    <!-- Display message -->
+    <h2 class="mt-5">User Messages</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Message</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for message in messages %}
+            <tr>
+                <td>{{ message.id }}</td>
+                <td>{{ message.user.username }}</td>
+                <td>{{ message.content }}</td>
+                <td>{{ message.date_created.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    {% if not message.is_review %}
+                    <a href="{{ url_for('post_review', message_id=message.id) }}" class="btn btn-success btn-sm">
+                        <i class="fas fa-check"></i> Post as Review
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('delete_message', message_id=message.id) }}" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <!-- Admin Review Submission -->
+    <h2 class="mt-5">Write a Review</h2>
+    <form method="POST" action="{{ url_for('admin_write_review') }}">
+        <div class="mb-3">
+            <label for="adminReview" class="form-label">Your Review</label>
+            <textarea class="form-control" id="adminReview" name="content" rows="3" placeholder="Write a review..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Post Review</button>
+    </form>
+
+</div>
+{% endblock %}

@@ -1,0 +1,362 @@
+/* Background for Login and Register Pages */
+body.login-register-bg {
+    background-image: url('{{ url_for("static", filename="images/background.jpg") }}');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Background for Home Page */
+.home-bg {
+    background-image: url('/static/home-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Full-height welcome container for Home Page */
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+    padding: 20px;
+}
+
+/* Welcome message styling */
+.welcome-message h1 {
+    font-size: 3rem;
+    color: #3052A0; /* Dark Blue */
+    margin-bottom: 20px;
+}
+
+.welcome-message p {
+    font-size: 1.5rem;
+    color: #8697C4; /* Muted Blue */
+}
+
+.card {
+    border-radius: 15px;
+    margin-top: 50px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-control {
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.btn-primary {
+    background-color: #7091E6; /* Light Blue */
+    border-radius: 8px;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #3052A0; /* Dark Blue */
+}
+
+a {
+    color: #7091E6; /* Light Blue */
+}
+
+a:hover {
+    color: #3052A0; /* Dark Blue */
+}
+
+/* Advantages Section Styles */
+.advantages-section {
+    padding: 40px 20px;
+    background-color: #EDEBF5; /* Light Purple/Gray */
+    text-align: center;
+}
+
+.advantages-section h2 {
+    font-size: 2.5rem;
+    color: #3052A0; /* Dark Blue */
+    margin-bottom: 30px;
+}
+
+.advantage {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.advantage h3 {
+    font-size: 1.8rem;
+    color: #3052A0; /* Dark Blue */
+}
+
+.advantage p {
+    font-size: 1.2rem;
+    color: #8697C4; /* Muted Blue */
+}
+
+.footer {
+    background-color: #EDEBF5; /* Light Purple/Gray */
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    padding: 20px 0;
+    color: #8697C4; /* Muted Blue */
+    text-align: center;
+}
+
+/* Floating Animation */
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Floating Text */
+.floating-text {
+    animation: float 3s ease-in-out infinite;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/**************************************/
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+/* Hero Section */
+.hero-section {
+    background-image: url('/static/home-bg.jpg'); /* Add your background image here */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    height: 100vh; /* Full viewport height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    position: relative; /* Required for the overlay */
+}
+
+/* Semi-transparent overlay */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(48, 82, 160, 0.7); /* Dark Blue with 70% opacity */
+    z-index: 1; /* Ensure the overlay is above the background image */
+}
+
+/* Content inside the hero section */
+.hero-content {
+    position: relative; /* Ensure the content is above the overlay */
+    z-index: 2; /* Higher than the overlay */
+    color: #fff; /* White text for contrast */
+}
+
+.hero-heading {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.hero-subheading {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+}
+
+/* Features Section */
+.features-section {
+    padding: 80px 20px;
+    background-color: #EDEBF5; /* Light Purple/Gray */
+}
+
+.features-section h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 50px;
+    color: #3052A0; /* Dark Blue */
+}
+
+.feature-icon {
+    margin-bottom: 20px;
+    color: #7091E6; /* Light Blue */
+}
+
+.features-section h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #3052A0; /* Dark Blue */
+}
+
+.features-section p {
+    font-size: 1rem;
+    color: #8697C4; /* Muted Blue */
+}
+
+/* Testimonials Section */
+.testimonials-section {
+    padding: 80px 20px;
+    background-color: #fff;
+}
+
+.testimonials-section h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 50px;
+    color: #3052A0; /* Dark Blue */
+}
+
+.blockquote {
+    font-size: 1.2rem;
+    color: #555;
+    border-left: 5px solid #7091E6; /* Light Blue */
+    padding-left: 20px;
+}
+
+.blockquote-footer {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #8697C4; /* Muted Blue */
+}
+
+/* Call-to-Action Section */
+.cta-section {
+    background: linear-gradient(135deg, #3052A0, #7091E6); /* Dark Blue to Light Blue */
+    color: #fff;
+    padding: 80px 20px;
+}
+
+.cta-section h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.cta-section p {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #7091E6; /* Light Blue */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #3052A0; /* Dark Blue */
+}
+
+.btn-lg {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+}
+
+/* Cards */
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Titles */
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #555;
+}
+
+/* Tables */
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+}
+.table-light {
+    background-color: #f1f1f1;
+    font-weight: bold;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+}
+.btn-danger:hover {
+    background-color: #a71d2a;
+}
+
+
+/* side barre */
+.sidebar {
+    background-color: #f8f9fa;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+.nav .nav-link {
+    color: #555;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav .nav-link:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.nav .nav-link i {
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}

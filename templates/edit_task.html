@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container d-flex align-items-center justify-content-center vh-100">
+    <div class="card shadow-lg p-4" style="max-width: 500px; width: 100%;">
+        <h2 class="mb-4 text-center">Edit Task</h2>
+        <form method="POST">
+            <div class="mb-3">
+                <label for="content" class="form-label">Task Content</label>
+                <input type="text" class="form-control" id="content" name="content" value="{{ task.content }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="deadline" class="form-label">Set Deadline</label>
+                <input type="datetime-local" class="form-control" id="deadline" name="deadline" value="{{ task.deadline.strftime('%Y-%m-%dT%H:%M') if task.deadline else '' }}">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

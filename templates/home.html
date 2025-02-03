@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <h1 class="hero-heading">Organize Your Tasks with Ease</h1>
+        <p class="hero-subheading">TaskEsse helps you manage your tasks efficiently and boost your productivity.</p>
+        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Get Started for Free</a>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="text-center mb-5">Why Choose TaskEsse?</h2>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <div class="feature-icon">
+                    <i class="fas fa-tasks fa-3x"></i>
+                </div>
+                <h3>Stay Organized</h3>
+                <p>Keep all your tasks in one place and never miss a deadline.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line fa-3x"></i>
+                </div>
+                <h3>Boost Productivity</h3>
+                <p>Prioritize your tasks and manage your time effectively.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt fa-3x"></i>
+                </div>
+                <h3>Access Anywhere</h3>
+                <p>Access your tasks on any device, anytime, anywhere.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">What Our Users Say</h2>
+        <div class="row">
+            {% for message in messages %}
+            <div class="col-md-6">
+                <blockquote class="blockquote">
+                    <p>"{{ message.content }}"</p>
+                    <footer class="blockquote-footer">{{ message.user.username }}</footer>
+                </blockquote>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+
+<!-- Call-to-Action Section -->
+<section class="cta-section text-center">
+    <div class="container">
+        <h2>Ready to Get Started?</h2>
+        <p>Sign up today and take control of your tasks.</p>
+        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Sign Up Now</a>
+    </div>
+</section>
+{% endblock %}

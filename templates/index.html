@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <!-- Add New Task Button -->
+        <div class="text-center mb-4">
+            <a href="{{ url_for('add_task') }}" class="btn btn-success btn-lg">
+                <i class="fas fa-plus"></i> Add New Task
+            </a>
+        </div>
+
+        <!-- Search Bar and All Button -->
+        <div class="mb-4">
+            <form action="{{ url_for('index') }}" method="GET" class="d-flex">
+                <input type="text" name="search" class="form-control me-2" placeholder="Search tasks..." value="{{ request.args.get('search', '') }}">
+                <button type="submit" class="btn btn-outline-primary me-2" title="Search">
+                    <i class="fas fa-search"></i>
+                </button>
+                <a href="{{ url_for('index') }}" class="btn btn-outline-secondary" title="All Tasks">
+                    <i class="fas fa-list"></i>
+                </a>
+            </form>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="text-center mb-4">
+            <h3 class="mb-3">Sort Tasks By:</h3>
+            <div class="btn-group" role="group">
+                <a href="{{ url_for('index', sort='date', search=request.args.get('search', '')) }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-calendar-alt"></i> Date
+                </a>
+                <a href="{{ url_for('index', sort='name', search=request.args.get('search', '')) }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-sort-alpha-down"></i> Name
+                </a>
+                <a href="{{ url_for('index', sort='complete', search=request.args.get('search', '')) }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-check-circle"></i> Completion
+                </a>
+                <a href="{{ url_for('index', sort='priority', search=request.args.get('search', '')) }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-exclamation-circle"></i> Priority
+                </a>
+            </div>
+        </div>
+
+        <!-- Productivity Section -->
+        <div class="productivity-section mb-5">
+            <h2 class="text-center mb-4">Your Productivity</h2>
+            <div class="row">
+                <!-- Total Tasks -->
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-tasks"></i> Total Tasks</h5>
+                            <p class="card-text display-6">{{ tasks|length }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completed Tasks -->
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-check-circle"></i> Completed</h5>
+                            <p class="card-text display-6">{{ tasks|selectattr('completed')|list|length }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completion Rate -->
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-chart-line"></i> Completion Rate</h5>
+                            <p class="card-text display-6">
+                                {% if tasks|length > 0 %}
+                                    {{ ((tasks|selectattr('completed')|list|length / tasks|length) * 100)|round(2) }}%
+                                {% else %}
+                                    0%
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tasks with Deadlines -->
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-clock"></i> With Deadlines</h5>
+                            <p class="card-text display-6">{{ tasks|selectattr('deadline')|list|length }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tasks Section -->
+        <div class="tasks mt-5">
+            <h2 class="text-center mb-4">Your Tasks</h2>
+            <div class="list-group">
+                {% for task in tasks %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center mb-3 shadow-sm">
+                        <!-- Task Content with Icon -->
+                        <div class="d-flex align-items-center">
+                            <span class="task-content {% if task.completed %}text-decoration-line-through text-muted{% endif %}">
+                                <i class="fas fa-tasks me-2"></i> {{ task.content }}
+                            </span>
+                            {% if task.deadline %}
+                                <small class="text-muted ms-3">
+                                    <i class="fas fa-clock"></i> Deadline: {{ task.deadline.strftime('%Y-%m-%d %H:%M') }}
+                                </small>
+                            {% endif %}
+                        </div>
+
+                        <!-- Task Actions -->
+                        <div class="d-flex">
+                            <!-- Desktop Buttons -->
+                            <div class="d-none d-md-flex">
+                                <!-- Edit Button -->
+                                <a href="{{ url_for('edit_task', id=task.id) }}" class="btn btn-sm btn-info me-2" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+
+                                <!-- Time Limit Button -->
+                                <button class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#timeLimitModal{{ task.id }}" title="Set Time">
+                                    <i class="fas fa-hourglass"></i>
+                                </button>
+
+                                <!-- Complete/Undo Button -->
+                                <a href="{{ url_for('complete', id=task.id) }}" class="btn btn-sm btn-success me-2" title="{% if task.completed %}Undo{% else %}Complete{% endif %}">
+                                    {% if task.completed %}<i class="fas fa-undo"></i>{% else %}<i class="fas fa-check"></i>{% endif %}
+                                </a>
+
+                                <!-- Delete Button -->
+                                <a href="{{ url_for('delete', id=task.id) }}" class="btn btn-sm btn-danger" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+
+                            <!-- Mobile Dropdown Menu -->
+                            <div class="dropdown d-md-none">
+                                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton{{ task.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ task.id }}">
+                                    <li>
+                                        <a class="dropdown-item" href="{{ url_for('edit_task', id=task.id) }}">
+                                            <i class="fas fa-edit me-2"></i> Edit
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#timeLimitModal{{ task.id }}">
+                                            <i class="fas fa-hourglass me-2"></i> Set Time
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ url_for('complete', id=task.id) }}">
+                                            {% if task.completed %}
+                                                <i class="fas fa-undo me-2"></i> Undo
+                                            {% else %}
+                                                <i class="fas fa-check me-2"></i> Complete
+                                            {% endif %}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" href="{{ url_for('delete', id=task.id) }}">
+                                            <i class="fas fa-trash me-2"></i> Delete
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Time Limit Modal -->
+                    <div class="modal fade" id="timeLimitModal{{ task.id }}" tabindex="-1" aria-labelledby="timeLimitModalLabel{{ task.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="timeLimitModalLabel{{ task.id }}">Set Time Limit for "{{ task.content }}"</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="POST" action="{{ url_for('set_time_limit', id=task.id) }}">
+                                        <div class="mb-3">
+                                            <label for="timeLimit{{ task.id }}" class="form-label">Set Deadline</label>
+                                            <input type="datetime-local" class="form-control" id="timeLimit{{ task.id }}" name="time_limit" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary w-100">Save</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info text-center">
+                        No tasks found. Add a new task to get started!
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <footer class="footer bg-light py-4 mt-5">
+        <div class="container text-center">
+            <span class="text-muted">&copy; 2025 TASKEASE. All rights reserved.</span>
+        </div>
+    </footer>
+{% endblock %}
