@@ -2,10 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask_migrate import Migrate
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
+from sqlalchemy import func
 
 
 app = Flask(__name__)
@@ -49,6 +50,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(120), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     tasks = db.relationship('Task', backref='user', lazy=True)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)  # Added
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -262,12 +264,45 @@ def admin_dashboard():
     # Performance metrics
     total_users = User.query.count()
     tasks_today = Task.query.filter(Task.date_created >= datetime.utcnow().date()).count()
-    new_users_today = User.query.filter(User.id > 0, User.id.in_(
-        [user.id for user in users])).count()
+    new_users_today = User.query.filter(func.date(User.date_created) == datetime.utcnow().date()).count()
 
-    return render_template('admin_dashboard.html', users=users, total_users=total_users,
-                           tasks_today=tasks_today, new_users_today=new_users_today)
+    # Analytics data
+    # User Growth (last 7 days)
+    user_growth_data = []
+    user_growth_labels = []
+    for i in range(6, -1, -1):
+        date = datetime.utcnow().date() - timedelta(days=i)
+        count = User.query.filter(func.date(User.date_created) == date).count()
+        user_growth_data.append(count)
+        user_growth_labels.append(date.strftime('%Y-%m-%d'))
 
+    # Task Completion Rate
+    completed_tasks = Task.query.filter_by(completed=True).count()
+    total_tasks = Task.query.count()
+    task_completion_data = [completed_tasks, total_tasks - completed_tasks]
+
+    # Active Users (Last 7 Days)
+    seven_days_ago = datetime.utcnow() - timedelta(days=7)
+    active_users_count = User.query.filter(User.id.in_(db.session.query(Task.user_id).filter(Task.date_created >= seven_days_ago))).count()
+
+    # Average Tasks per User
+    avg_tasks_per_user = db.session.query(func.avg(db.session.query(func.count(Task.id)).group_by(Task.user_id).as_scalar())).scalar() or 0
+    avg_tasks_per_user = round(float(avg_tasks_per_user), 2)
+
+    # Fetch messages for the admin dashboard
+    messages = Message.query.order_by(Message.date_created.desc()).all()
+
+    return render_template('admin_dashboard.html', 
+                           users=users, 
+                           total_users=total_users,
+                           tasks_today=tasks_today, 
+                           new_users_today=new_users_today,
+                           user_growth_data=user_growth_data, 
+                           user_growth_labels=user_growth_labels,
+                           task_completion_data=task_completion_data,
+                           active_users_count=active_users_count,
+                           avg_tasks_per_user=avg_tasks_per_user,
+                           messages=messages)
 
 # Deleting users and tasks
 @app.route('/delete_user/<int:user_id>')

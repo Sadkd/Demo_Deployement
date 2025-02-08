@@ -7,7 +7,7 @@
     <!-- Performance Section -->
     <h2 class="mt-5">Performance Overview</h2>
     <div class="row text-center">
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Total Users</h5>
@@ -15,7 +15,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Tasks Created Today</h5>
@@ -23,11 +23,50 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">New Users Today</h5>
                     <p class="display-6">{{ new_users_today }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Active Users (7 Days)</h5>
+                    <p class="display-6">{{ active_users_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Section -->
+    <h2 class="mt-5">Analytics</h2>
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">User Growth (Last 7 Days)</h5>
+                    <canvas id="userGrowthChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Task Completion Rate</h5>
+                    <canvas id="taskCompletionChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Average Tasks per User</h5>
+                    <p class="display-4 text-center">{{ avg_tasks_per_user }}</p>
                 </div>
             </div>
         </div>
@@ -67,7 +106,7 @@
                     <td>
                         {% if not user.is_admin %}
                             <a href="{{ url_for('delete_user', user_id=user.id) }}" class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash"></i> 
+                                <i class="fas fa-trash"></i>
                             </a>
                         {% endif %}
                     </td>
@@ -75,8 +114,7 @@
             {% endfor %}
         </tbody>
     </table>
-   
-
+    
     <!-- Display message -->
     <h2 class="mt-5">User Messages</h2>
     <table class="table table-striped">
@@ -111,7 +149,6 @@
         </tbody>
     </table>
 
-
     <!-- Admin Review Submission -->
     <h2 class="mt-5">Write a Review</h2>
     <form method="POST" action="{{ url_for('admin_write_review') }}">
@@ -119,8 +156,54 @@
             <label for="adminReview" class="form-label">Your Review</label>
             <textarea class="form-control" id="adminReview" name="content" rows="3" placeholder="Write a review..." required></textarea>
         </div>
+        <!-- Hidden input field for message_id -->
+        <input type="hidden" name="message_id" value="{{ message.id if message else '' }}">
         <button type="submit" class="btn btn-primary">Post Review</button>
     </form>
-
 </div>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Charts initialization -->
+<script>
+    // User Growth Chart
+    var userGrowthCtx = document.getElementById('userGrowthChart').getContext('2d');
+    var userGrowthChart = new Chart(userGrowthCtx, {
+        type: 'line',
+        data: {
+            labels: {{ user_growth_labels | tojson }},
+            datasets: [{
+                label: 'New Users',
+                data: {{ user_growth_data | tojson }},
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Task Completion Chart
+    var taskCompletionCtx = document.getElementById('taskCompletionChart').getContext('2d');
+    var taskCompletionChart = new Chart(taskCompletionCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Completed', 'Pending'],
+            datasets: [{
+                data: {{ task_completion_data | tojson }},
+                backgroundColor: ['rgb(75, 192, 192)', 'rgb(255, 99, 132)']
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+</script>
 {% endblock %}
