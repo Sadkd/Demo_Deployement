@@ -16,7 +16,7 @@ The objective of this project is to demonstrate a **complete cloud deployment wo
 
 ---
 
-# ☁️ Deployment Architecture
+## ☁️ Deployment Architecture
 
 The application is deployed using the following Azure services:
 
@@ -28,7 +28,7 @@ The application is deployed using the following Azure services:
 
 ---
 
-# 🛠️ Deployment Technologies
+## 🛠️ Deployment Technologies
 
 * Python 3.12
 * Flask
@@ -61,8 +61,8 @@ git push -u origin main
 
 ### Step 1 — Create Azure Resource Group
 
-* Resource Group Name: `grp_name`
-* Region: `nearest_region`
+* Resource Group Name: `your_grp_name`
+* Region: `your_nearest_region`
 
 This resource group contains all deployment components.
 
@@ -84,8 +84,8 @@ This service hosts the Flask application.
 ### Step 3 — Create PostgreSQL Database
 
 * PostgreSQL Flexible Server
-* Database Name: `taske-database`
-* Server Name: `taske-server`
+* Database Name: `your-database_name`
+* Server Name: `tyour_server_name`
 
 Used for persistent storage.
 
